@@ -60,7 +60,13 @@ if ($ansprechpartner) :
                 
                 foreach ($social_media_icons as $key => $icon) {
                     if (!empty($links[$key])) {
-                        $url = $key === 'email' ? 'mailto:' . $links[$key] : $links[$key];
+                        if ($key === 'email') {
+                            // Validierung der E-Mail-Adresse
+                            $email = filter_var($links[$key], FILTER_VALIDATE_EMAIL);
+                            $url = $email ? 'mailto:' . $email : '#'; // Fallback auf '#' bei ungültiger E-Mail
+                        } else {
+                            $url = $links[$key]; // Andere Links bleiben unverändert
+                        }
                         echo "<a href='" . esc_url($url) . "' target='_blank' rel='noopener noreferrer' class='w-5 h-5'>";
                         echo "<img src='" . get_template_directory_uri() . "/assets/icons/$icon' alt='" . ucfirst($key) . " Icon'>";
                         echo "</a>";
